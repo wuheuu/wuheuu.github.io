@@ -160,6 +160,65 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://wuheuu.github.io/2022/05/31/leet-code-14/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/IMG_8400.jpg">
+      <meta itemprop="name" content="ocat-tae">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="HEWW">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/05/31/leet-code-14/" class="post-title-link" itemprop="url">LEETCODE/14-最长公共前缀</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2022-05-31 23:11:09 / Modified: 23:18:07" itemprop="dateCreated datePublished" datetime="2022-05-31T23:11:09+02:00">2022-05-31</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="Java-String自带函数"><a href="#Java-String自带函数" class="headerlink" title="Java-String自带函数"></a>Java-String自带函数</h2><h2 id="String-startswith-检测字符串是否以指定的前缀开始"><a href="#String-startswith-检测字符串是否以指定的前缀开始" class="headerlink" title="String.startswith:检测字符串是否以指定的前缀开始"></a>String.startswith:检测字符串是否以指定的前缀开始</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">class Solution &#123;</span><br><span class="line">    public String longestCommonPrefix(String[] strs) &#123;</span><br><span class="line">        if(strs.length==0)return &quot;&quot;;</span><br><span class="line">        String s=strs[0];</span><br><span class="line">        for (String string : strs) &#123;</span><br><span class="line">            while(!string.startsWith(s))&#123;</span><br><span class="line">                if(s.length()==0)return &quot;&quot;;</span><br><span class="line">                s=s.substring(0,s.length()-1);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        return s;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="http://wuheuu.github.io/2022/05/24/leet-code-53/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -440,7 +499,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">3</span>
+          <span class="site-state-item-count">4</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
