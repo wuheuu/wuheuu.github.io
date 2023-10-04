@@ -217,7 +217,7 @@ defaults:
       type: posts
     values:
       layout: article
-      author: zorch
+      author: wuhe
       sharing: true
       license: true
       aside:
