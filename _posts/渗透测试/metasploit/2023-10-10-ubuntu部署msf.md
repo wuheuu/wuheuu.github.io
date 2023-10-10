@@ -14,3 +14,4 @@ sudo apt install postgresql
 sudo service postgresql status
 msfconsole
 ```
+参考链接：[msf使用方法](https://blog.csdn.net/qq_63844103/article/details/128801917)
