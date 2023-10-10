@@ -144,5 +144,6 @@ VER|STATUS|RSV|BNDADDR|BNDPORT
 2. reGEorg
 3. sSocks
 4. SocksCap64
-5. Proxifier
+5. Proxifier：Proxifier是一款全局代理客户端，它可以让应用程序通过代理服务器连接到互联网。
 6. ProxyChains
+7. Stowaway：Stowaway是一个利用go语言编写、专为渗透测试工作者制作的多级代理工具

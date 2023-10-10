@@ -1,6 +1,6 @@
 ---
-categories: [Cobalt Strike]
-tags: [keystore]
+categories: [渗透测试]
+tags: keystore CobaltStrike
 ---
 # 2023.10.09
 ## SSL证书中的keystore是什么
