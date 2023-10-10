@@ -1,6 +1,6 @@
 ---
 categories: [渗透测试]
-tags: [代理]
+tags: 代理 SOCKS
 ---
 
 # 2023.10.10

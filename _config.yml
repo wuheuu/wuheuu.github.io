@@ -22,7 +22,7 @@ url     : # the base hostname & protocol for your site e.g. https://www.someone.
 baseurl : # does not include hostname
 title   : wuhe 的博客
 description: > # this means to ignore newlines until "Language & timezone"
-  A man who wants to change the world. 
+  WHY?
 
 
 ## => Language and Timezone
@@ -179,7 +179,7 @@ analytics:
 
 ## => Build
 ##############################
-markdown    : kramdown
+markdown    : GFM
 highlighter : rouge
 # permalink   : date
 # 添加category内容
