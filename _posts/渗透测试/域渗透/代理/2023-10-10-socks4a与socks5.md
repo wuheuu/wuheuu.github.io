@@ -129,3 +129,20 @@ VER|CMD|RSV|DSTADDR|DSTPORT
 ##### 服务端响应
 VER|STATUS|RSV|BNDADDR|BNDPORT
 |-|-|-|-|-|
+
+***
+## 总结
+### SOCKS代理用途
+参考链接：[内网渗透-隐藏通信隧道技术(下)](https://bbs.huaweicloud.com/blogs/400552)
+
+1. 服务器在内网中，可以任意访问外部网络
+2. 服务器在内网中，可以访问外部网络，但服务器安装了防火墙来拒绝敏感端口的连接。
+3. 服务器在内网中，对外开放了部分端口，且服务器不能访问外部网络。
+
+### 常用SOCKS代理工具
+1. EarthWorm
+2. reGEorg
+3. sSocks
+4. SocksCap64
+5. Proxifier
+6. ProxyChains
