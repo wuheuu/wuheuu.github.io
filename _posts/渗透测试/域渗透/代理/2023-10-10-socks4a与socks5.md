@@ -5,7 +5,7 @@ tags: 代理 SOCKS
 
 # 2023.10.10
 
-## SOCKS4、SOCKS4a与SOCKS5
+## 0x01 SOCKS4、SOCKS4a与SOCKS5
 SOCKS和socks（袜子）一样，用来代替客户端和服务端进行连接，即代理协议
 
 > **_Note:_**[ref-link](https://zhuanlan.zhihu.com/p/439451917?utm_id=0)
@@ -20,7 +20,7 @@ SOCKS在OSI七层协议的第五层，也就是Session layer（会话层）中�
 > - SOCKS4：没有关于安全方面的约定
 > - SOCKS5：最初是一种使防火墙和其他安全产品更易于管理的安全协议。
 
-### SOCKS4
+### 1.1 SOCKS4
 #### 请求包
 VER|CMD|DSTPORT|DSTIP|ID
 |-|-|-|-|-|
@@ -49,7 +49,7 @@ VN|REP|DSTPORT|DSTIP
 >
 > 当连接建立完毕，所有的SOCKS客户端到SOCKS服务器端的请求都会转发到66.102.7.99。
 
-### SOCKS4a
+### 1.2 SOCKS4a
 SOCKS4只能指定**目的服务器的IP地址**，这对应服务器有多个IP的情况下会有很严重的限制。所以SOCK4a对SOCK4进行了扩展，可以支持目标服务器的域名。
 #### 请求包
 在SOCKS4请求包最后加入了**DOMAIN**字段。
@@ -60,7 +60,7 @@ DOMAIN表示的是要连接到的目标服务器的域名。使用null (0x00)来
 
 服务端响应与SOCK4相同。
 
-### SOCKS5
+### 1.3 SOCKS5
 虽然SOCKS5是SOCKS的最新版本，但是SOCKS5和SOCKS4是不兼容的。SOCKS5支持认证，并且提供了对IPv6和UDP的支持。其中UDP可以用来进行DNS lookups。它的交互流程如下所示：
 1. 客户端和服务器端进行连接，并发送一个greeting消息，同时包含了支持的认证方法列表。
 2. 服务器端选择一个支持的认证方法，如果都不支持，则发送失败响应。
@@ -131,15 +131,15 @@ VER|STATUS|RSV|BNDADDR|BNDPORT
 |-|-|-|-|-|
 
 ***
-## 总结
-### SOCKS代理用途
+## 0x02 总结
+### 2.1 SOCKS代理用途
 参考链接：[内网渗透-隐藏通信隧道技术(下)](https://bbs.huaweicloud.com/blogs/400552)
 
 1. 服务器在内网中，可以任意访问外部网络
 2. 服务器在内网中，可以访问外部网络，但服务器安装了防火墙来拒绝敏感端口的连接。
 3. 服务器在内网中，对外开放了部分端口，且服务器不能访问外部网络。
 
-### 常用SOCKS代理工具
+### 2.2 常用SOCKS代理工具
 1. EarthWorm
 2. reGEorg
 3. sSocks

@@ -3,8 +3,8 @@ categories: [渗透测试]
 tags: keystore CobaltStrike
 ---
 # 2023.10.09
-## SSL证书中的keystore是什么
-### SSL协议
+## 0x01 SSL证书中的keystore是什么
+### 1.1 SSL协议
 SSL安全协议：Secure socket layer(SSL)，用来提供对用户和服务器的认证，对传送的数据进行**加密和隐藏**，确保数据在传输中不被改变，即**数据的完整性**
 #### SSL证书
 SSL证书是数字证书的一种，类似于驾驶证、护照和营业执照的电子副本。因为配置在服务器上，也称为SSL服务器证书。
@@ -13,7 +13,7 @@ SSL证书就是遵守 SSL协议，由受信任的数字证书颁发机构CA，�
 
 > **_Note:_** SSL证书在客户端浏览器和web服务器之间建立一条SSL安全通道
 
-### keystore
+### 1.2 keystore
 java密钥库，用来进行通信加密，比如数字签名。keystore用来保存密钥对，比如公钥与私钥。
 
 #### keystore中包含两种数据
@@ -22,14 +22,14 @@ java密钥库，用来进行通信加密，比如数字签名。keystore用来�
 
 [JDK中keytool常用命令参考](https://blog.csdn.net/wecloud1314/article/details/123042277)
 ***
-## Keystore password is incorrect
+## 0x02 Keystore password is incorrect
 今天在使用cs_cat的时候再次遇到了这个问题，第一次遇到这个问题是在公网服务器上部署cs服务端的时候，但当时解决得比较混乱，也居然没有做任何笔记。。。今天沉下心来好好分析了一下问题，并结合公网服务器的history历史指令进行分析后，发现原来思路很清晰。
 
-### 公网ubuntu上次解决这个问题的历史指令一角
+### 1.3 公网ubuntu上次解决这个问题的历史指令一角
 ![2023-10-09-18-18-00.png](https://s2.loli.net/2023/10/09/xrfD83cUKTyohwm.png)
 
 
-### 本次解决问题思路
+### 1.4 本次解决问题思路
 1. 首先看明白这个keystore究竟是个什么东西
 2. 查找一些资料，理解这个问题所在，其实非常简单，就是字面上写的“密钥库密码不正确”，毫无复杂之处。
 3. 分析上次的历史指令后，发现应当需要重新生成一个密钥库。删除原本的密钥库，使用<code>keytool</code>生成一个新的密钥库，名字依然为<code>cobaltstrike</code>。
