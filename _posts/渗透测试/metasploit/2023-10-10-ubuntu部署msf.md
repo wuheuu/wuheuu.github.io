@@ -34,6 +34,10 @@ db_connect postgres:<password>@127.0.0.1/test
 # 查看数据库连接状态
 db_status
 ```
+## 0x03 安装nmap
+```bash
+apt install nmap -y # 只有机器上安装了nmap 才能在msf中使用db_nmap!!!!
+```
 参考链接：
 1. [msf使用方法](https://blog.csdn.net/qq_63844103/article/details/128801917)
 2. [postgresql](https://zhuanlan.zhihu.com/p/387455070)
