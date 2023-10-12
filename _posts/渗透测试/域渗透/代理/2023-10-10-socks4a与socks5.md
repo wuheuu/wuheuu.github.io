@@ -11,8 +11,10 @@ SOCKS和socks（袜子）一样，用来代替客户端和服务端进行连接�
 > **_Note:_**[ref-link](https://zhuanlan.zhihu.com/p/439451917?utm_id=0)
 
 SOCKS在OSI七层协议的第五层，也就是Session layer（会话层）中，它处于Presentation layer（表示层）和Transport layer（传输层）的中间。传输层的主要协议是TCP/UDP，因此SOCKS底层就是TCP和UDP协议。
+![](2023-10-12-10-20-39.png)
+作为一个代理协议，SOCKS可以提供**基于TCP和UDP的代理**，相较于HTTP的代理而言，SOCKS的代理更加底层，所以应用场景也会更多。
 
-作为一个代理协议，SOCKS可以提供基于TCP和UDP的代理，相较于HTTP的代理而言，SOCKS的代理更加底层，所以应用场景也会更多。
+> **_Note:_**由于SOCKS运行在会话层上，因此能代理**TCP、UDP本身**以及**基于它们之上的协议，例如`http/https over tcp，http3 over udp(quic)`**，但无法代理**icmp协议**，因为icmp协议是网络层协议（3层），因此通过SOCKS无法ping通谷歌，不要觉得是代理软件或节点的问题，是你的问题!!!!
 
 通常来说，SOCKS的标准端口是1080。
 
@@ -145,5 +147,5 @@ VER|STATUS|RSV|BNDADDR|BNDPORT
 3. sSocks
 4. SocksCap64
 5. Proxifier：Proxifier是一款全局代理客户端，它可以让应用程序通过代理服务器连接到互联网。
-6. ProxyChains
+6. ProxyChains：遵循GNU协议的一款适用于linux系统的网络代理设置工具。
 7. Stowaway：Stowaway是一个利用go语言编写、专为渗透测试工作者制作的多级代理工具
