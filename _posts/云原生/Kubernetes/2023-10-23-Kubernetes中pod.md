@@ -1,5 +1,5 @@
 ---
-categories: [容器]
+categories: [Kubernetes]
 tags: Kubernetes pod 云原生
 ---
 # 2023.10.23
