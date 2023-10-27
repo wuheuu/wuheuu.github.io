@@ -14,8 +14,8 @@ tags: Kubernetes 云原生 pod
 参考链接：[k8s常用指令](https://blog.csdn.net/lukairui7747/article/details/130947808)
 附加部分：
 1. kubectl:
-   1. ![](2023-10-25-11-56-27.png)
-   2. ![](2023-10-25-11-57-54.png)
+   1. ![2023-10-25-11-56-27.png](https://s2.loli.net/2023/10/27/QdKN15c7m4zTDkr.png)
+   2. ![2023-10-25-11-57-54.png](https://s2.loli.net/2023/10/27/w6jgryRdsniSVK9.png)
    3. `kubectl auth can-i --list`：列出当前用户在集群中的RBAC权限，用于查询当前用户是否有权限执行各种操作，如创建、删除、获取资源等。
 2. cluster
    > Q: what is k8s cluster?

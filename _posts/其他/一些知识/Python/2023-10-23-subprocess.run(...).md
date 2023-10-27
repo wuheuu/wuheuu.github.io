@@ -33,7 +33,7 @@ p1 = subprocess.run(['ls','-la'], stdout=subprocess.PIPE, text=True)# 把输出�
 with open('output.txt', 'w') as f:
     p1 = subprocess.run(['ls','-la'], stdout=f, text=True)
 ```
-![](2023-10-23-10-15-02.png)
+![2023-10-23-10-15-02.png](https://s2.loli.net/2023/10/27/qhmt6KTWFD7pYEC.png)
 ### subprocess出错情况
 ```python
 import subprocess
