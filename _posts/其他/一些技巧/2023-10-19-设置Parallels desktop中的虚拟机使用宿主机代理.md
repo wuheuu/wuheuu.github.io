@@ -6,7 +6,7 @@ tags: 代理 虚拟机 ParallelsDesktop
 参考链接：[设置Parallels Desktop中的虚拟机使用宿主机代理](https://blog.csdn.net/u011195398/article/details/85791354)
 ## 原理
 
-[{Post:虚拟机三种网络模式]({% post_url 2023-10-19-虚拟机三种网络模式 %})
+[Post:虚拟机三种网络模式]({% post_url 2023-10-19-虚拟机三种网络模式 %})
 
 ## 设置代理
 ### Ubuntu主机
