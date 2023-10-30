@@ -4,14 +4,14 @@ tags: Kubernetes pod 云原生
 ---
 # 2023.10.23
 参考链接：[Kubernetes中Pod介绍](https://blog.csdn.net/faoids/article/details/130678297)
-## Pod是什么
+##  0x01 Pod是什么
 - K8s中的最小管理单元
 - 容器在Pod中，一个Pod可以包含单个或多个容器（多个容器：当多个容器之间需要共享存储、网络等时使用）
 > **_Note:_**可以将pod看作虚拟机，每个容器相当于运行在虚拟机的进程
-### pod如何管理多个容器
+### 1.1 pod如何管理多个容器
 - 同一个pod中的容器会自动被分配到同一个node上
 - 同一个pod中的容器共享资源、网络环境
-#### k8s容器类型
+#### 1.1.1 k8s容器类型
 参考链接：[Kubernetes容器类型Init-pause-sidecar-app容器](https://blog.csdn.net/lpfstudy/article/details/131620791)
 1. Init初始化容器
    
@@ -31,5 +31,5 @@ tags: Kubernetes pod 云原生
    3. 身份验证和授权
    4. 代理和负载均衡
 4. app容器：跑业务代码的容器
-## pod网络
+##  0x02 pod网络
 pod有ip地址，可以在初始化k8s集群时通过`--cluster-cidr`参数控制pod ip cidr网段，所有动态分配的ip都会落在此网段内。

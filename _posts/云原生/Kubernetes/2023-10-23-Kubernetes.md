@@ -4,13 +4,13 @@ tags: Kubernetes 云原生 pod
 ---
 # 2023.10.23
 参考链接：[Kubernetes中Pod介绍](https://blog.csdn.net/faoids/article/details/130678297)
-## Kubernetes的作用
+##  0x01 Kubernetes的作用
 - 管理容器化应用程序的部署、扩展和运行：容器时代与物理机时代不同，很多东西都具有可变性，如：
   - IP地址
   - 网络
   - 存储
 - 跨多主机运行，利用云计算平台和虚拟化技术进行高效资源利用
-## Kubernetes常用概念
+##  0x02 Kubernetes常用概念
 参考链接：[k8s常用指令](https://blog.csdn.net/lukairui7747/article/details/130947808)
 附加部分：
 1. kubectl:
@@ -28,13 +28,13 @@ tags: Kubernetes 云原生 pod
    > Q: what is minikube?
       > A: Minikube is a lightweight Kubernetes implementation that creates a VM on your local machine and deploys a simple **cluster** containing **only one node**.
 
-## 命名空间
+##  0x03 命名空间
 1. default
 2. kube-node-lease
 3. kube-public
 4. kube-system
 ***
-## k8s网络插件
+##  0x04 k8s网络插件
 参考链接：[Kubernetes 之7大CNI 网络插件用法和对比](https://developer.aliyun.com/article/1245323)
 k8s需要网络插件来提供集群内部和集群外部的网络通信。常用的网络插件：
 1. Flannel : 常用的k8s网络插件之一，使用虚拟网络技术来实现容器之间的通信，支持多种网络后端，如VXLAN、UDP、Host-GW
@@ -45,7 +45,7 @@ k8s需要网络插件来提供集群内部和集群外部的网络通信。常�
 6. Contiv：Contiv是一种基于SDN技术的网络插件，它提供了多种网络功能，如虚拟网络、网络隔离、负载均衡和安全策略等。
 7. Antrea : Antrea 是一种基于OVS(Open vSwitch) 技术的网络插件，它提供了容器之间的通信、网络策略和安全性等功能，还支持多种网络拓扑结构。
 ***
-## k8s组件
+##  0x05 k8s组件
 参考链接：[kubernetes组件](https://kubernetes.io/zh-cn/docs/concepts/overview/components/)
 1. 控制平面组件：control plane components
    1. kube-apiserver：API 服务器是 Kubernetes 控制平面的组件，该组件负责公开了 Kubernetes API，负责处理接受请求的工作。 API 服务器是 Kubernetes 控制平面的前端。
@@ -55,9 +55,9 @@ k8s需要网络插件来提供集群内部和集群外部的网络通信。常�
     如果你的 Kubernetes 集群使用 etcd 作为其后台数据库， 请确保你针对这些数据有一份 备份计划。
 
 ***
-## k8s结构
+##  0x06 k8s结构
 参考视频：[Kubernetes Architecture explained](https://www.youtube.com/watch?v=umXEmn3cMWY)
-### Node processes
+### 6.1 Node processes
 1. Each node has multiple pods on it
 2. **3 processes** must be installed on every node
    1. container runtime
@@ -74,7 +74,7 @@ k8s需要网络插件来提供集群内部和集群外部的网络通信。常�
 > ==>==>==>==>==>==>
 > 
 > *ALL THESE MANAGING PROCESSES ARE DONE BY **MASTER NODES*** 
-### Master processes
+### 6.2 Master processes
 1. **4 processes** run on every master node
    1. Api server : **Load balanced** 当我们想对集群进行某些操作时，需要使用某个client客户端（k8s dashboard/k8s api）与Api server进行交互
       1. like a **cluster gateway** : gets the initial requests of any updates into the cluster or even the queries from the cluster
