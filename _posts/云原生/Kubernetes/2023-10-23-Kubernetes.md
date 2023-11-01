@@ -11,7 +11,9 @@ tags: Kubernetes 云原生 pod
   - 存储
 - 跨多主机运行，利用云计算平台和虚拟化技术进行高效资源利用
 ##  0x02 Kubernetes常用概念
-参考链接：[k8s常用指令](https://blog.csdn.net/lukairui7747/article/details/130947808)
+参考链接：
+1. [k8s常用指令](https://blog.csdn.net/lukairui7747/article/details/130947808)
+2. [kubectl cheatsheet](https://kubernetes.io/docs/reference/kubectl/cheatsheet/#bash)
 附加部分：
 1. kubectl:
    1. ![2023-10-25-11-56-27.png](https://s2.loli.net/2023/10/27/QdKN15c7m4zTDkr.png)
@@ -74,7 +76,7 @@ k8s需要网络插件来提供集群内部和集群外部的网络通信。常�
 > ==>==>==>==>==>==>
 > 
 > *ALL THESE MANAGING PROCESSES ARE DONE BY **MASTER NODES*** 
-### 6.2 Master processes
+#### 6.1.1 Master processes
 1. **4 processes** run on every master node
    1. Api server : **Load balanced** 当我们想对集群进行某些操作时，需要使用某个client客户端（k8s dashboard/k8s api）与Api server进行交互
       1. like a **cluster gateway** : gets the initial requests of any updates into the cluster or even the queries from the cluster
@@ -91,3 +93,32 @@ k8s需要网络插件来提供集群内部和集群外部的网络通信。常�
        2. Did the cluster state change?
        3. Is the cluster healthy?
         > **_Note:_** Application data is **NOT** stored in etcd
+### 6.2 Master节点和Worker节点
+#### 6.2.1 Master节点
+responsible for cluster management and for providing the API that is used to configure and manage resources within the Kubernetes cluster负责管理集群，并提供用于在k8s集群内配置和管理资源的API
+1. 功能：
+   1. 监视集群整体状态
+   2. 编排组件之间的通信
+   3. 执行整体的一些决策
+2. 关键组件：
+   1. API Server：暴露k8s API，充当集群管理的主要控制点
+   2. Controller Manager：监控集群状态并执行自动操作，以保持用户定义的理想状态。
+   3. Scheduler：根据资源可用性和限制，将工作负载（如Pod）分配给适当的工作节点。
+   4. etcd：分布式键值存储，用于存储集群的配置和状态信息。
+   
+#### 6.2.2 Worker节点
+responsible for executing your Docker containers；machines where the actual workloads, such as pods and containers, run 负责运行Docker容器
+1. 功能：
+   1. 存放真实的工作负载，如pods/containers。
+   2. 工作负载执行master node分配的任务
+2. 关键组件：
+   1. Kubelet：与master node通信，管理在该节点上运行的容器
+   2. Container Runtime：执行容器镜像，例如Docker/containerd
+   3. Kube-proxy：处理节点上Pods之间的网络和负载均衡问题。
+> **_Note:_** 在生产部署中，master节点的重要性？【由于以下几点，在生产部署中设置一个或多个master节点是非常重要的】
+> 1. 高可用性：多个master节点通过提供冗余度和容错性。如果其中一个master节点出了问题，其他的master节点可以接手，防止集群管理和控制出现中断。
+> 2. 集群管理：master节点负责管理集群状态，处理扩展、调度和协调工作负载分配。它们维护集群的理想状态，高效处理资源分配。
+> 3. 集群扩展：master节点根据资源可用性在工作节点间分配工作负载，从而在集群扩展方面发挥重要作用。它们可优化资源利用率，确保高效的工作负载分配。
+> 4. 安全和身份验证：master节点负责处理身份验证、授权和其他与安全相关的人物。它们执行策略和访问控制，确保集群内的通信安全。
+> 5. 集群升级和维护：master节点通过管理新版本的推出、监控集群健康状况和执行必要的维护任务，促进集群的无缝升级和维护。
+> 6. 集中控制：master节点是管理集群、做出全局决策和执行策略的集中控制点。它提供了与集群交互的统一界面。
