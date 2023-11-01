@@ -94,6 +94,7 @@ k8s需要网络插件来提供集群内部和集群外部的网络通信。常�
        3. Is the cluster healthy?
         > **_Note:_** Application data is **NOT** stored in etcd
 ### 6.2 Master节点和Worker节点
+参考链接：[What is the difference between a cluster master node and a worker node in Kubernetes? How important is it to have one or more master nodes for production deployments?](https://www.quora.com/What-is-the-difference-between-a-cluster-master-node-and-a-worker-node-in-Kubernetes-How-important-is-it-to-have-one-or-more-master-nodes-for-production-deployments)
 #### 6.2.1 Master节点
 responsible for cluster management and for providing the API that is used to configure and manage resources within the Kubernetes cluster负责管理集群，并提供用于在k8s集群内配置和管理资源的API
 1. 功能：
