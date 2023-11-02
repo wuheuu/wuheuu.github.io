@@ -69,6 +69,16 @@ Pod的IP地址，由docker0网卡分配
 #### 4.1.3 Cluster IP
 可叫Service IP，Service的IP地址
 
+Cluster IP是一个虚拟的IP，实际是一个伪造的IP网络。Service可以为一组具有相同功能的容器应用提供一个统一的入口地址， 并且将请求负载分发到后端的各个容器应用上，可以将后端的多个容器看做一个集群，Service是集群的入口。所以Service IP也叫做Cluster IP。
+
+- Cluster IP仅仅作用于kubernetes Service这个对象，并由Kubernetes管理和分配IP地址（来源于Cluster IP地址池）
+- Cluster IP无法被ping，因为没有一个“实体网络对象”来响应
+- Cluster IP只能结合Service Port组成一个具体的通信端口，单独的Cluster IP不具备TCP/IP通信的基础，并且它们属于Kubernetes集群这样一个封闭的空间，集群之外的节点如果要访问这个通信端口，则需要做一些额外的工作。
+### 4.2 三种IP间的通信
+- 集群内部通信见上文的Pod IP。
+- 集群外部访问Pod，先到Node网络（Node IP）的端口NodePort，再转到Service网络（Cluster IP）的port，最后代理给Pod网络（Pod IP）的targetPort。
+以上文Node IP中Service为例，详细流程如下：
+![](2023-11-02-17-36-28.png)
 ## 0x05 k8s组件
 参考链接：[kubernetes组件](https://kubernetes.io/zh-cn/docs/concepts/overview/components/)
 1. 控制平面组件：control plane components
