@@ -4,13 +4,13 @@ tags: Kubernetes 云原生 pod
 ---
 # 2023.10.23
 参考链接：[Kubernetes中Pod介绍](https://blog.csdn.net/faoids/article/details/130678297)
-##  0x01 Kubernetes的作用
+## 0x01 Kubernetes的作用
 - 管理容器化应用程序的部署、扩展和运行：容器时代与物理机时代不同，很多东西都具有可变性，如：
   - IP地址
   - 网络
   - 存储
 - 跨多主机运行，利用云计算平台和虚拟化技术进行高效资源利用
-##  0x02 Kubernetes常用概念
+## 0x02 Kubernetes常用概念
 参考链接：
 1. [k8s常用指令](https://blog.csdn.net/lukairui7747/article/details/130947808)
 2. [kubectl cheatsheet](https://kubernetes.io/docs/reference/kubectl/cheatsheet/#bash)
@@ -30,13 +30,13 @@ tags: Kubernetes 云原生 pod
    > Q: what is minikube?
       > A: Minikube is a lightweight Kubernetes implementation that creates a VM on your local machine and deploys a simple **cluster** containing **only one node**.
 
-##  0x03 命名空间
+## 0x03 命名空间
 1. default
 2. kube-node-lease
 3. kube-public
 4. kube-system
 ***
-##  0x04 k8s网络插件
+## 0x04 k8s网络插件
 参考链接：[Kubernetes 之7大CNI 网络插件用法和对比](https://developer.aliyun.com/article/1245323)
 k8s需要网络插件来提供集群内部和集群外部的网络通信。常用的网络插件：
 1. Flannel : 常用的k8s网络插件之一，使用虚拟网络技术来实现容器之间的通信，支持多种网络后端，如VXLAN、UDP、Host-GW
@@ -46,8 +46,30 @@ k8s需要网络插件来提供集群内部和集群外部的网络通信。常�
 5. Cilium : Cilium是一种基于eBPF (Extended Berkeley Packet Filter) 技术的网络插件，它使用Linux内核的动态插件来提供网络功能，如路由、负载均衡、安全性和网络策略等。
 6. Contiv：Contiv是一种基于SDN技术的网络插件，它提供了多种网络功能，如虚拟网络、网络隔离、负载均衡和安全策略等。
 7. Antrea : Antrea 是一种基于OVS(Open vSwitch) 技术的网络插件，它提供了容器之间的通信、网络策略和安全性等功能，还支持多种网络拓扑结构。
-***
-##  0x05 k8s组件
+### 4.1 kubernetes中三种IP地址
+参考链接：[k8s——三种IP地址](https://blog.csdn.net/weixin_44754964/article/details/116754287)
+![](2023-11-02-16-23-26.png)
+#### 4.1.1 Node IP 
+Node节点的IP地址，即物理机（宿主机）的网卡地址
+1. Node节点所在主机通过`ifconfig`查看IP地址
+   ![](2023-11-02-16-29-07.png)
+2. Node节点通过`kubectl describe node metarget-master`查看节点IP地址，发现与物理机相同
+   ![](2023-11-02-16-32-09.png)
+#### 4.1.2 Pod IP
+Pod的IP地址，由docker0网卡分配
+- 同Service下的pod可以直接根据PodIP相互通信
+- 不同Service下的pod在集群间pod通信要借助于 cluster ip
+- pod和集群外通信，要借助于node ip
+
+通过`kubectl describe pod <podName> [-n <namespace>] `查看Pod IP地址
+
+正常情况下，Pod IP应当为172开头，但在此处，由于在创建pod时，共享了主机的网络命名空间，因此，所查看到的Pod IP恰好为节点的IP。
+![](2023-11-02-16-41-47.png)
+
+#### 4.1.3 Cluster IP
+可叫Service IP，Service的IP地址
+
+## 0x05 k8s组件
 参考链接：[kubernetes组件](https://kubernetes.io/zh-cn/docs/concepts/overview/components/)
 1. 控制平面组件：control plane components
    1. kube-apiserver：API 服务器是 Kubernetes 控制平面的组件，该组件负责公开了 Kubernetes API，负责处理接受请求的工作。 API 服务器是 Kubernetes 控制平面的前端。
@@ -57,7 +79,7 @@ k8s需要网络插件来提供集群内部和集群外部的网络通信。常�
     如果你的 Kubernetes 集群使用 etcd 作为其后台数据库， 请确保你针对这些数据有一份 备份计划。
 
 ***
-##  0x06 k8s结构
+## 0x06 k8s结构
 参考视频：[Kubernetes Architecture explained](https://www.youtube.com/watch?v=umXEmn3cMWY)
 ### 6.1 Node processes
 1. Each node has multiple pods on it
@@ -123,3 +145,29 @@ responsible for executing your Docker containers；machines where the actual wor
 > 4. 安全和身份验证：master节点负责处理身份验证、授权和其他与安全相关的人物。它们执行策略和访问控制，确保集群内的通信安全。
 > 5. 集群升级和维护：master节点通过管理新版本的推出、监控集群健康状况和执行必要的维护任务，促进集群的无缝升级和维护。
 > 6. 集中控制：master节点是管理集群、做出全局决策和执行策略的集中控制点。它提供了与集群交互的统一界面。
+
+## 0x07 Pod调度
+参考链接：
+1. [Kubernetes For Beginners: Taints Tolerations vs Node Affinity](https://www.youtube.com/watch?v=mB3ODCDWZIY)
+2. [管理节点污点（taint）](https://www.ctyun.cn/document/10025153/10077243)
+### 7.1 Taints & Tolerations 污点（容忍度）调度
+#### 7.1.1 污点：Taints
+污点(Taint)能够使节点排斥某些特定的Pod，从而避免Pod调度到该节点上。
+
+节点污点是与“效果”相关联的键值对。以下是可用的效果：
+
+- NoSchedule：不能容忍此污点的 Pod 不会被调度到节点上；现有 Pod 不会从节点中逐出。
+- PreferNoSchedule：Kubernetes 会尽量避免将不能容忍此污点的 Pod 安排到节点上。
+- NoExecute：如果 Pod 已在节点上运行，则会将该 Pod 从节点中逐出；如果尚未在节点上运行，则不会将其安排到节点上。
+#### 7.1.2 容忍度(Toleration)
+容忍度应用于Pod上，允许（但并不要求）Pod 调度到带有与之匹配的污点的节点上。
+
+污点和容忍度相互配合，可以用来避免 Pod 被分配到不合适的节点上。 每个节点上都可以应用一个或多个污点，这表示对于那些不能容忍这些污点的 Pod，是不会被该节点接受的。
+### 7.2 亲和性调度
+参考链接：[Kubernetes中Pod调度第二篇NodeAffinity详解、实例](https://blog.csdn.net/u011837804/article/details/128472698)
+#### 7.2.1 NodeAffinity
+节点亲和性，以node为目标，解决pod可以调度到哪些node的问题
+#### 7.2.2 PodAffinity
+pod亲和性，以pod为目标，解决pod可以和哪些已存在的pod部署在同一个拓扑域中的问题
+#### 7.2.3 PodAntiAffinity
+pod反亲和性，以pod为目标，解决pod不能和哪些已存在pod部署在同一个拓扑域中的问题
