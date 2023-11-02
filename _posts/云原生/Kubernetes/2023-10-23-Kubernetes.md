@@ -48,13 +48,13 @@ k8s需要网络插件来提供集群内部和集群外部的网络通信。常�
 7. Antrea : Antrea 是一种基于OVS(Open vSwitch) 技术的网络插件，它提供了容器之间的通信、网络策略和安全性等功能，还支持多种网络拓扑结构。
 ### 4.1 kubernetes中三种IP地址
 参考链接：[k8s——三种IP地址](https://blog.csdn.net/weixin_44754964/article/details/116754287)
-![](2023-11-02-16-23-26.png)
+![2023-11-02-16-23-26.png](https://s2.loli.net/2023/11/02/yNFWPBG5jv2oIbg.png)
 #### 4.1.1 Node IP 
 Node节点的IP地址，即物理机（宿主机）的网卡地址
 1. Node节点所在主机通过`ifconfig`查看IP地址
-   ![](2023-11-02-16-29-07.png)
+   ![2023-11-02-16-29-07.png](https://s2.loli.net/2023/11/02/52ZgmFM8TE1w6iK.png)
 2. Node节点通过`kubectl describe node metarget-master`查看节点IP地址，发现与物理机相同
-   ![](2023-11-02-16-32-09.png)
+   ![2023-11-02-16-32-09.png](https://s2.loli.net/2023/11/02/d9ronmKIUNg4htH.png)
 #### 4.1.2 Pod IP
 Pod的IP地址，由docker0网卡分配
 - 同Service下的pod可以直接根据PodIP相互通信
@@ -64,7 +64,7 @@ Pod的IP地址，由docker0网卡分配
 通过`kubectl describe pod <podName> [-n <namespace>] `查看Pod IP地址
 
 正常情况下，Pod IP应当为172开头，但在此处，由于在创建pod时，共享了主机的网络命名空间，因此，所查看到的Pod IP恰好为节点的IP。
-![](2023-11-02-16-41-47.png)
+![2023-11-02-16-41-47.png](https://s2.loli.net/2023/11/02/JNXZquwgLtBRpE5.png)
 
 #### 4.1.3 Cluster IP
 可叫Service IP，Service的IP地址
@@ -78,7 +78,7 @@ Cluster IP是一个虚拟的IP，实际是一个伪造的IP网络。Service可�
 - 集群内部通信见上文的Pod IP。
 - 集群外部访问Pod，先到Node网络（Node IP）的端口NodePort，再转到Service网络（Cluster IP）的port，最后代理给Pod网络（Pod IP）的targetPort。
 以上文Node IP中Service为例，详细流程如下：
-![](2023-11-02-17-36-28.png)
+![2023-11-02-17-36-28.png](https://s2.loli.net/2023/11/02/795OowPgx3sfpHY.png)
 ## 0x05 k8s组件
 参考链接：[kubernetes组件](https://kubernetes.io/zh-cn/docs/concepts/overview/components/)
 1. 控制平面组件：control plane components
