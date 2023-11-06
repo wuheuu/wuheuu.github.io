@@ -3,7 +3,9 @@ categories: [Kubernetes]
 tags: Kubernetes 云原生 pod
 ---
 # 2023.10.23
-参考链接：[Kubernetes中Pod介绍](https://blog.csdn.net/faoids/article/details/130678297)
+参考链接：
+1. [Kubernetes中Pod介绍](https://blog.csdn.net/faoids/article/details/130678297)
+2. [K8s集群安全攻防(上)](https://xz.aliyun.com/t/12921)
 ## 0x01 Kubernetes的作用
 - 管理容器化应用程序的部署、扩展和运行：容器时代与物理机时代不同，很多东西都具有可变性，如：
   - IP地址
@@ -81,17 +83,26 @@ Cluster IP是一个虚拟的IP，实际是一个伪造的IP网络。Service可�
 ![2023-11-02-17-36-28.png](https://s2.loli.net/2023/11/02/795OowPgx3sfpHY.png)
 ## 0x05 k8s组件
 参考链接：[kubernetes组件](https://kubernetes.io/zh-cn/docs/concepts/overview/components/)
-1. 控制平面组件：control plane components
-   1. kube-apiserver：API 服务器是 Kubernetes 控制平面的组件，该组件负责公开了 Kubernetes API，负责处理接受请求的工作。 API 服务器是 Kubernetes 控制平面的前端。
-    Kubernetes API 服务器的主要实现是 kube-apiserver。kube-apiserver 设计上考虑了水平扩缩，也就是说，它可通过部署多个实例来进行扩缩。 你可以运行 kube-apiserver 的多个实例，并在这些实例之间平衡流量。
-    2. etcd 一致且高可用的键值存储，用作 Kubernetes 所有集群数据的后台数据库。[Key value store of a cluster state]【a cluster brain】
+### 5.1 核心组件
+1. kube-apiserver：提供了资源操作的唯一入口，并提供认证、授权、访问控制、API注册和发现等机制。
+ 
+API 服务器是 Kubernetes 控制平面的组件，该组件负责公开了 Kubernetes API，负责处理接受请求的工作。 API 服务器是 Kubernetes 控制平面的前端。
 
-    如果你的 Kubernetes 集群使用 etcd 作为其后台数据库， 请确保你针对这些数据有一份 备份计划。
+Kubernetes API 服务器的主要实现是 kube-apiserver。kube-apiserver 设计上考虑了水平扩缩，也就是说，它可通过部署多个实例来进行扩缩。 你可以运行 kube-apiserver 的多个实例，并在这些实例之间平衡流量。
+2. etcd 保存整个集群的状态；一致且高可用的键值存储，用作 Kubernetes 所有集群数据的后台数据库。[Key value store of a cluster state]【a cluster brain】
 
-***
+如果你的 Kubernetes 集群使用 etcd 作为其后台数据库， 请确保你针对这些数据有一份 备份计划。
+3. controller manager：负责维护集群的状态，比如故障检测、自动扩展、滚动更新等
+4. scheduler：负责资源的调度，按照预定的调度策略将Pod调度到相应的机器上
+5. kubelet：负责维护容器的生命周期，同时也负责Volume(CVI)和网络(CNI)的管理
+6. Container runtime：负责镜像管理以及Pod和容器的真正运行(CRI)
+7. kube-proxy：负责为Service提供cluster内部的服务发现和负载均衡
+### 5.2 关键组件的常用默认端口
+![](2023-11-03-10-02-46.png)
 ## 0x06 k8s结构
 参考视频：[Kubernetes Architecture explained](https://www.youtube.com/watch?v=umXEmn3cMWY)
 ### 6.1 Node processes
+![](2023-11-03-09-18-26.png)
 1. Each node has multiple pods on it
 2. **3 processes** must be installed on every node
    1. container runtime
@@ -181,3 +192,5 @@ responsible for executing your Docker containers；machines where the actual wor
 pod亲和性，以pod为目标，解决pod可以和哪些已存在的pod部署在同一个拓扑域中的问题
 #### 7.2.3 PodAntiAffinity
 pod反亲和性，以pod为目标，解决pod不能和哪些已存在pod部署在同一个拓扑域中的问题
+## 0x08 Namespace
+Namespace是对一组资源和对象的抽象集合，比如可以用来将系统内部的对象划分为不同的项目组或用户组，常见的pods, services, replication controllers和deployments等都是属于某一个namespace的(默认是default)，而node, persistentVolumes等则不属于任何namespace
