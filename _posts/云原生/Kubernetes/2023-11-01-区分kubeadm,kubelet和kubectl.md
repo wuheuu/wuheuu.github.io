@@ -1,6 +1,6 @@
 ---
-categories: [Kubenetes]
-tags: Kubenetes kubeadm kubelet kubectl
+categories: [Kubernetes]
+tags: Kubernetes kubeadm kubelet kubectl
 ---
 # 2023-11-01 18:35:09
 ## 0x01 kubeadm
