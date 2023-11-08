@@ -98,11 +98,11 @@ Kubernetes API 服务器的主要实现是 kube-apiserver。kube-apiserver 设�
 6. Container runtime：负责镜像管理以及Pod和容器的真正运行(CRI)
 7. kube-proxy：负责为Service提供cluster内部的服务发现和负载均衡
 ### 5.2 关键组件的常用默认端口
-![](2023-11-03-10-02-46.png)
+![2023-11-03-10-02-46.png](https://s2.loli.net/2023/11/08/qUt9burd37AiwRc.png)
 ## 0x06 k8s结构
 参考视频：[Kubernetes Architecture explained](https://www.youtube.com/watch?v=umXEmn3cMWY)
 ### 6.1 Node processes
-![](2023-11-03-09-18-26.png)
+![2023-11-03-09-18-26.png](https://s2.loli.net/2023/11/08/XdsK4ZqwGAxWTyH.png)
 1. Each node has multiple pods on it
 2. **3 processes** must be installed on every node
    1. container runtime
