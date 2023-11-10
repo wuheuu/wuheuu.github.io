@@ -6,7 +6,7 @@ tags: Kubernetes pod 云原生
 参考链接：[Kubernetes中Pod介绍](https://blog.csdn.net/faoids/article/details/130678297)
 ## 0x01 Pod是什么
 - K8s中的最小管理单元
-- 容器在Pod中，一个Pod可以包含单个或多个容器（多个容器：当多个容器之间需要共享存储、网络等时使用）
+- 容器在Pod中，pod只是一个逻辑上的概念，实际由一个或多个容器组成（多个容器：当多个容器之间需要共享存储、网络等时使用）
 > **_Note:_**可以将pod看作虚拟机，每个容器相当于运行在虚拟机的进程
 ### 1.1 pod如何管理多个容器
 - 同一个pod中的容器会自动被分配到同一个node上
