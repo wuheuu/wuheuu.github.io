@@ -81,17 +81,27 @@ Cluster IP是一个虚拟的IP，实际是一个伪造的IP网络。Service可�
 - 集群外部访问Pod，先到Node网络（Node IP）的端口NodePort，再转到Service网络（Cluster IP）的port，最后代理给Pod网络（Pod IP）的targetPort。
 以上文Node IP中Service为例，详细流程如下：
 ![2023-11-02-17-36-28.png](https://s2.loli.net/2023/11/02/795OowPgx3sfpHY.png)
+
+### 4.3 多节点多pod间通信原理
+参考链接：[A Guide to the Kubernetes Networking Model
+](https://sookocheff.com/post/kubernetes/understanding-kubernetes-networking-model/)
+#### 4.3.1 同节点两pod间通信
+路径为pod1 netns:eth0 -> root netns:veth0 -> root netns:cbr0 -> root netns:veth1 -> pod2 netns:eth0,参考4.1部分Figure6
+![](2023-11-15-18-30-07.png)
+#### 4.3.2 多节点间两pod间通信
+路径为pod1 netns:eth0 -> Node1 root netns:veth0 -> Node1 root netns:cbr0 -> arp失败（由于没有相应MAC地址的连接设备存在） -> Node1 root netns:eth0(数据包离开第一个节点，进入网络中) -> Node2 root netns:eth0 -> Node2 root netns:veth1 -> Node2 pod4 netns:eth0,参考4.2部分Figure7
+![](2023-11-15-18-44-19.png)
 ## 0x05 k8s组件
 参考链接：[kubernetes组件](https://kubernetes.io/zh-cn/docs/concepts/overview/components/)
 ### 5.1 核心组件
 1. kube-apiserver：提供了资源操作的唯一入口，并提供认证、授权、访问控制、API注册和发现等机制。
  
-API 服务器是 Kubernetes 控制平面的组件，该组件负责公开了 Kubernetes API，负责处理接受请求的工作。 API 服务器是 Kubernetes 控制平面的前端。
+   API 服务器是 Kubernetes 控制平面的组件，该组件负责公开了 Kubernetes API，负责处理接受请求的工作。 API 服务器是 Kubernetes 控制平面的前端。
 
-Kubernetes API 服务器的主要实现是 kube-apiserver。kube-apiserver 设计上考虑了水平扩缩，也就是说，它可通过部署多个实例来进行扩缩。 你可以运行 kube-apiserver 的多个实例，并在这些实例之间平衡流量。
+   Kubernetes API 服务器的主要实现是 kube-apiserver。kube-apiserver 设计上考虑了水平扩缩，也就是说，它可通过部署多个实例来进行扩缩。 你可以运行 kube-apiserver 的多个实例，并在这些实例之间平衡流量。
 2. etcd 保存整个集群的状态；一致且高可用的键值存储，用作 Kubernetes 所有集群数据的后台数据库。[Key value store of a cluster state]【a cluster brain】
 
-如果你的 Kubernetes 集群使用 etcd 作为其后台数据库， 请确保你针对这些数据有一份 备份计划。
+   如果你的 Kubernetes 集群使用 etcd 作为其后台数据库， 请确保你针对这些数据有一份 备份计划。
 3. controller manager：负责维护集群的状态，比如故障检测、自动扩展、滚动更新等
 4. scheduler：负责资源的调度，按照预定的调度策略将Pod调度到相应的机器上
 5. kubelet：负责维护容器的生命周期，同时也负责Volume(CVI)和网络(CNI)的管理
@@ -201,3 +211,17 @@ Namespace是对一组资源和对象的抽象集合，比如可以用来将系�
 `apiserver-kubelet-client.crt`: client certificate; /etc/kubernetes/pki/apiserver-kubelet-client.crt
 ### 9.3 apiserver-kubelet-client.key 
 `apiserver-kubelet-client.key`: client key; /etc/kubernetes/pki/apiserver-kubelet-client.key
+## 0x10 Service
+### 10.1 Service是什么？
+在k8s里面每个Pod都会被分配一个单独的IP地址,但这个IP地址会随着Pod的销毁而消失，重启pod的ip地址会发生变化，此时客户如果访问原先的ip地址则会报错。
+
+Service (服务)就是用来解决这个问题的, Service是应用服务的抽象，通过labels为应用提供负载均衡和服务发现，匹配labels的Pod IP和端口列表组成endpoints，由kube-proxy负责将服务IP负载均衡到这些endpoints上，通常每一个Service都会自动分配一个Cluster IP(仅在集群内部可访问的虚拟地址)和DNS名，其他容器可以通过该地址或DNS来访问服务，而不需要了解后端容器的运行。
+![](2023-11-15-18-14-45.png)
+### 10.2 Service分类
+1. ClusterIP : 默认类型自动分配一个【仅集群内部】可以访问的虚拟IP
+2. NodePort : 对外访问应用使用在ClusterIP基础上为Service在每台机器上绑定一个端口就可以通过: ip+NodePort来访问该服务 在之前搭建k8s集群部署nginx的时候我们使用过
+3. LoadBalancer :
+   1. 使在NodePort的基础上借助公有云创建一个外部负载均衡器并将请求转发到NodePort
+   2. 可以实现集群外部访问服务的另外一种解决方案不过并不是所有的k8s集群都会支持大多是在公有云托管集群中会支持该类型
+4. ExternalName : 把集群外部的服务引入到集群内部来在集群内部直接使用。没有任何类型代理被创建这只有 Kubernetes  1.7或更高版本的kube-dns才支持。
+
