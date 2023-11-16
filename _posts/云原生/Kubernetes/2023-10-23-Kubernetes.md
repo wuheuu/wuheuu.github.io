@@ -212,6 +212,10 @@ Namespace是对一组资源和对象的抽象集合，比如可以用来将系�
 ### 9.3 apiserver-kubelet-client.key 
 `apiserver-kubelet-client.key`: client key; /etc/kubernetes/pki/apiserver-kubelet-client.key
 ## 0x10 Service
+参考链接：
+1. [A Guide to the Kubernetes Networking Model
+](https://sookocheff.com/post/kubernetes/understanding-kubernetes-networking-model/)
+2. [Netfilter和iptables介绍](https://www.cnblogs.com/wtzbk/p/15505814.html)
 ### 10.1 Service是什么？
 在k8s里面每个Pod都会被分配一个单独的IP地址,但这个IP地址会随着Pod的销毁而消失，重启pod的ip地址会发生变化，此时客户如果访问原先的ip地址则会报错。
 
@@ -224,4 +228,23 @@ Service (服务)就是用来解决这个问题的, Service是应用服务的抽�
    1. 使在NodePort的基础上借助公有云创建一个外部负载均衡器并将请求转发到NodePort
    2. 可以实现集群外部访问服务的另外一种解决方案不过并不是所有的k8s集群都会支持大多是在公有云托管集群中会支持该类型
 4. ExternalName : 把集群外部的服务引入到集群内部来在集群内部直接使用。没有任何类型代理被创建这只有 Kubernetes  1.7或更高版本的kube-dns才支持。
+### 10.3 集群内负载均衡的实现
+#### 10.3.1 netfilter
+集群内部的负载均衡通过Linux数据包过滤框架netfilter实现，netfilter主要功能是对进出内核协议栈的数据包进行过滤或修改，iptables建立在netfilter之上，是Linux内核里挡在网卡和用户态进程之间的一道防火墙。
+![](2023-11-16-09-40-15.png)
+这幅示意图中，IP包一进一出，有几个关键的检查点，它们正是Netfilter设置防火墙的地方。Netfilter通过向内核协议栈中不同的位置注册钩子函数来对数据包进行过滤或者修改操作，这些位置称为挂载点，主要有 5 个：PRE_ROUTING、LOCAL_IN、FORWARD、LOCAL_OUT 和 POST_ROUTING，如下图所示：
+![](2023-11-16-09-43-42.png)
+1. PRE_ROUTING: IP包进入IP层后，还没有对数据包进行路由判定前；
+2. LOCAL_IN: 进入主机，对IP包进行路由判定后，如果IP 包是发送给本地的，在进入传输层之前对IP包进行过滤；
+3. LOCAL_OUT: IP包通过传输层进入用户空间，交给用户进程处理。而处理完成后，用户进程会通过本机发出返回的 IP 包，在没有对输出的IP包进行路由判定前进行过滤；
+4. FORWARD: IP包进行路由判定后，如果IP包不是发送给本地的，在转发IP包出去前进行过滤；
+5. POST_ROUTING: 对于输出的IP包，在对IP包进行路由判定后进行过滤；
+Netfilter 提供用于数据包过滤、网络地址转换和端口转换的各种功能和操作，可提供引导数据包通过网络以及禁止数据包到达计算机网络内敏感位置所需的功能。
+#### 10.3.2 iptables
+iptables是建立在netfilter之上的数据包过滤器，通过向Netfilter的挂载点上注册钩子函数来实现对数据包过滤的，从iptables这个名字上可以看出一定具有表的概念，iptables通过把这些规则表挂载在Netfilter的不同链上，对进出内核协议栈的数据包进行过滤或者修改操作。
 
+iptables包括四种表:
+1. filter表:用于过滤数据包，是iptables的默认表，因此如果你配置规则时没有指定表，那么就默认使用Filter表，Filter表可以作用于INPUT链、OUTPUT链、PORWARD链；
+2. NAT表:用于对数据包的网络地址转换(IP、端口)，分别可以挂载到PREROUTING链、POSTOUTING链、OUTPUT链；
+3. Mangle表:用来修改IP数据包头，比如修改TTL值，同时也用于给数据包添加一些标记，从而便于后续其它模块对数据包进行处理，可以作用在所有链上；
+4. ROW表:用于判定数据包是否被状态跟踪处理，可以作用于PREROUTING链、OUTPUT链；
