@@ -55,3 +55,8 @@ p1 = subprocess.run(['cat','test.txt'], capture_output=True, text=True)
 p2 = subprocess.run(['grep', '-n', 'test'], capture_output=True, text=True, input=p1.stdout) #grep -n：显示行号
 print(p2.stdout)
 ```
+
+### 2.4 为什么在执行某个指令后需要进行decode
+`x = res.stdout.decode('utf-8').split('\n')
+`
+因为获取的stdout为命令的标准输出结果，是一个字节序列(bytes)，因此需要将字节序列解码为UTF-8编码的字符串，然后按换行符进行分割，将其转换为一个字符串列表。

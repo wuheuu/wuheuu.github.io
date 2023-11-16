@@ -39,7 +39,15 @@ tags: Kubernetes 云原生 pod
 4. kube-system
 ***
 ## 0x04 k8s网络插件
-参考链接：[Kubernetes 之7大CNI 网络插件用法和对比](https://developer.aliyun.com/article/1245323)
+参考链接：
+1. [Kubernetes 之7大CNI 网络插件用法和对比](https://developer.aliyun.com/article/1245323)
+2. [What is CNI?](https://blog.fourninecloud.com/container-network-interface-101-231537d7967a)
+在了解网络插件之前需要先理解CNI究竟是什么。
+
+CNI(Container Network Interface，CNI)，容器网络接口，是一个容器网络标准，这个协议连接了两个组件:容器编排管理系统和网络插件。
+![](2023-11-16-11-54-58.png)
+以下的部分用处并不大，可以略过。直接从4.1部分开始看。
+***
 k8s需要网络插件来提供集群内部和集群外部的网络通信。常用的网络插件：
 1. Flannel : 常用的k8s网络插件之一，使用虚拟网络技术来实现容器之间的通信，支持多种网络后端，如VXLAN、UDP、Host-GW
 2. Calico : 一种基于BGP的网络插件，使用路由表来路由容器之间的流量，支持多种网络拓扑结构，并提供安全性和网络策略功能。
@@ -83,14 +91,18 @@ Cluster IP是一个虚拟的IP，实际是一个伪造的IP网络。Service可�
 ![2023-11-02-17-36-28.png](https://s2.loli.net/2023/11/02/795OowPgx3sfpHY.png)
 
 ### 4.3 多节点多pod间通信原理
-参考链接：[A Guide to the Kubernetes Networking Model
+参考链接：
+1. [A Guide to the Kubernetes Networking Model
 ](https://sookocheff.com/post/kubernetes/understanding-kubernetes-networking-model/)
+2. [Amazon VPC CNI for EKS](https://medium.com/engineered-publicis-sapient/container-network-interface-cni-for-eks-4b1cbfff0f4e)
 #### 4.3.1 同节点两pod间通信
 路径为pod1 netns:eth0 -> root netns:veth0 -> root netns:cbr0 -> root netns:veth1 -> pod2 netns:eth0,参考4.1部分Figure6
 ![](2023-11-15-18-30-07.png)
 #### 4.3.2 多节点间两pod间通信
 路径为pod1 netns:eth0 -> Node1 root netns:veth0 -> Node1 root netns:cbr0 -> arp失败（由于没有相应MAC地址的连接设备存在） -> Node1 root netns:eth0(数据包离开第一个节点，进入网络中) -> Node2 root netns:eth0 -> Node2 root netns:veth1 -> Node2 pod4 netns:eth0,参考4.2部分Figure7
 ![](2023-11-15-18-44-19.png)
+![](2023-11-16-11-19-25.png)
+![](2023-11-16-11-19-34.png)
 ## 0x05 k8s组件
 参考链接：[kubernetes组件](https://kubernetes.io/zh-cn/docs/concepts/overview/components/)
 ### 5.1 核心组件
@@ -216,6 +228,8 @@ Namespace是对一组资源和对象的抽象集合，比如可以用来将系�
 1. [A Guide to the Kubernetes Networking Model
 ](https://sookocheff.com/post/kubernetes/understanding-kubernetes-networking-model/)
 2. [Netfilter和iptables介绍](https://www.cnblogs.com/wtzbk/p/15505814.html)
+
+参考视频：[Netfilter & Iptables Elements](https://www.youtube.com/watch?v=AKOQPiWBnJ0)
 ### 10.1 Service是什么？
 在k8s里面每个Pod都会被分配一个单独的IP地址,但这个IP地址会随着Pod的销毁而消失，重启pod的ip地址会发生变化，此时客户如果访问原先的ip地址则会报错。
 
@@ -234,6 +248,7 @@ Service (服务)就是用来解决这个问题的, Service是应用服务的抽�
 ![](2023-11-16-09-40-15.png)
 这幅示意图中，IP包一进一出，有几个关键的检查点，它们正是Netfilter设置防火墙的地方。Netfilter通过向内核协议栈中不同的位置注册钩子函数来对数据包进行过滤或者修改操作，这些位置称为挂载点，主要有 5 个：PRE_ROUTING、LOCAL_IN、FORWARD、LOCAL_OUT 和 POST_ROUTING，如下图所示：
 ![](2023-11-16-09-43-42.png)
+![](2023-11-16-10-23-16.png)
 1. PRE_ROUTING: IP包进入IP层后，还没有对数据包进行路由判定前；
 2. LOCAL_IN: 进入主机，对IP包进行路由判定后，如果IP 包是发送给本地的，在进入传输层之前对IP包进行过滤；
 3. LOCAL_OUT: IP包通过传输层进入用户空间，交给用户进程处理。而处理完成后，用户进程会通过本机发出返回的 IP 包，在没有对输出的IP包进行路由判定前进行过滤；
@@ -248,3 +263,20 @@ iptables包括四种表:
 2. NAT表:用于对数据包的网络地址转换(IP、端口)，分别可以挂载到PREROUTING链、POSTOUTING链、OUTPUT链；
 3. Mangle表:用来修改IP数据包头，比如修改TTL值，同时也用于给数据包添加一些标记，从而便于后续其它模块对数据包进行处理，可以作用在所有链上；
 4. ROW表:用于判定数据包是否被状态跟踪处理，可以作用于PREROUTING链、OUTPUT链；
+#### 10.3.3 br_netfilter
+参考链接：
+1. [IPTABLES](https://www.tkng.io/services/clusterip/dataplane/iptables/)【参考use case1】
+2. [Tim's diagram](https://docs.google.com/drawings/d/1MtWL8qRTs6PlnJrW4dh8135_S9e2SaawT410bJuoBPk/edit)
+3. [【博客515】k8s中为什么需要br_netfilter与net.bridge.bridge-nf-call-iptables=1](https://blog.csdn.net/qq_43684922/article/details/127333368)
+
+##### 10.3.3.1 br_netfilter的意义
+br_netfiler作用：br_netfilter模块可以使 iptables 规则可以在 Linux Bridges 上面工作，用于将桥接的流量转发至iptables链
+
+在基本使用过程中，如果没有加载br_netfilter模块，那么并不会影响不同node上的pod之间的通信，但是会影响同node内的pod之间通过service来通信
+
+iptables是在三层的，而linux bridge是在二层的。当pod发出的流量经过service来转发后是到同一个node上的pod，那么此时两个pod都是桥接在cni网桥上的，那么就会直接通过网桥来传递流量，但是此时流量的处理就不会up call到三层的iptables规则，从而导致转发异常
+##### 10.3.3.2 net.bridge.bridge-nf-call-iptables=1
+启用 bridge-nf-call-iptables 这个内核参数 (置为 1)，表示 bridge 设备在二层转发时也去调用 iptables 配置的三层规则 (包含 conntrack)
+
+1. 每个 Pod 的网卡都是 veth 设备，veth pair 的另一端连上宿主机上的网桥。
+2. 由于网桥是虚拟的二层设备，同节点的 Pod 之间通信直接走二层转发，跨节点通信才会经过宿主机 eth0。
