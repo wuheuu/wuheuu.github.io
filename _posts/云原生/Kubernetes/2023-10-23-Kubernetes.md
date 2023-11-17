@@ -45,7 +45,7 @@ tags: Kubernetes 云原生 pod
 在了解网络插件之前需要先理解CNI究竟是什么。
 
 CNI(Container Network Interface，CNI)，容器网络接口，是一个容器网络标准，这个协议连接了两个组件:容器编排管理系统和网络插件。
-![](2023-11-16-11-54-58.png)
+![2023-11-16-11-54-58.png](https://s2.loli.net/2023/11/17/nMPgtjsXGzOqJSx.png)
 以下的部分用处并不大，可以略过。直接从4.1部分开始看。
 ***
 k8s需要网络插件来提供集群内部和集群外部的网络通信。常用的网络插件：
@@ -76,6 +76,8 @@ Pod的IP地址，由docker0网卡分配
 正常情况下，Pod IP应当为172开头，但在此处，由于在创建pod时，共享了主机的网络命名空间，因此，所查看到的Pod IP恰好为节点的IP。
 ![2023-11-02-16-41-47.png](https://s2.loli.net/2023/11/02/JNXZquwgLtBRpE5.png)
 
+##### 4.1.2.1 pod network cidr
+The Kubernetes pod-network-cidr is the IP prefix for all pods in the Kubernetes cluster
 #### 4.1.3 Cluster IP
 可叫Service IP，Service的IP地址
 
@@ -101,8 +103,8 @@ Cluster IP是一个虚拟的IP，实际是一个伪造的IP网络。Service可�
 #### 4.3.2 多节点间两pod间通信
 路径为pod1 netns:eth0 -> Node1 root netns:veth0 -> Node1 root netns:cbr0 -> arp失败（由于没有相应MAC地址的连接设备存在） -> Node1 root netns:eth0(数据包离开第一个节点，进入网络中) -> Node2 root netns:eth0 -> Node2 root netns:veth1 -> Node2 pod4 netns:eth0,参考4.2部分Figure7
 ![](2023-11-15-18-44-19.png)
-![](2023-11-16-11-19-25.png)
-![](2023-11-16-11-19-34.png)
+![2023-11-16-11-19-25.png](https://s2.loli.net/2023/11/17/ScQ63zLMJ7GxhpC.png)
+![2023-11-16-11-19-34.png](https://s2.loli.net/2023/11/17/oUnbjEtIuDTcqsH.png)
 ## 0x05 k8s组件
 参考链接：[kubernetes组件](https://kubernetes.io/zh-cn/docs/concepts/overview/components/)
 ### 5.1 核心组件
@@ -245,10 +247,10 @@ Service (服务)就是用来解决这个问题的, Service是应用服务的抽�
 ### 10.3 集群内负载均衡的实现
 #### 10.3.1 netfilter
 集群内部的负载均衡通过Linux数据包过滤框架netfilter实现，netfilter主要功能是对进出内核协议栈的数据包进行过滤或修改，iptables建立在netfilter之上，是Linux内核里挡在网卡和用户态进程之间的一道防火墙。
-![](2023-11-16-09-40-15.png)
+![2023-11-16-09-40-15.png](https://s2.loli.net/2023/11/17/Bd6bUMfTDuLKZm7.png)
 这幅示意图中，IP包一进一出，有几个关键的检查点，它们正是Netfilter设置防火墙的地方。Netfilter通过向内核协议栈中不同的位置注册钩子函数来对数据包进行过滤或者修改操作，这些位置称为挂载点，主要有 5 个：PRE_ROUTING、LOCAL_IN、FORWARD、LOCAL_OUT 和 POST_ROUTING，如下图所示：
-![](2023-11-16-09-43-42.png)
-![](2023-11-16-10-23-16.png)
+![2023-11-16-09-43-42.png](https://s2.loli.net/2023/11/17/uV5GpgqRABykJ8H.png)
+![2023-11-16-10-23-16.png](https://s2.loli.net/2023/11/17/ZNJqxic74mufOgp.png)
 1. PRE_ROUTING: IP包进入IP层后，还没有对数据包进行路由判定前；
 2. LOCAL_IN: 进入主机，对IP包进行路由判定后，如果IP 包是发送给本地的，在进入传输层之前对IP包进行过滤；
 3. LOCAL_OUT: IP包通过传输层进入用户空间，交给用户进程处理。而处理完成后，用户进程会通过本机发出返回的 IP 包，在没有对输出的IP包进行路由判定前进行过滤；
