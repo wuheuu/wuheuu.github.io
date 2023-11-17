@@ -99,10 +99,10 @@ Cluster IP是一个虚拟的IP，实际是一个伪造的IP网络。Service可�
 2. [Amazon VPC CNI for EKS](https://medium.com/engineered-publicis-sapient/container-network-interface-cni-for-eks-4b1cbfff0f4e)
 #### 4.3.1 同节点两pod间通信
 路径为pod1 netns:eth0 -> root netns:veth0 -> root netns:cbr0 -> root netns:veth1 -> pod2 netns:eth0,参考4.1部分Figure6
-![](2023-11-15-18-30-07.png)
+![2023-11-15-18-30-07.png](https://s2.loli.net/2023/11/17/gSA5IcOrWb1XCiB.png)
 #### 4.3.2 多节点间两pod间通信
 路径为pod1 netns:eth0 -> Node1 root netns:veth0 -> Node1 root netns:cbr0 -> arp失败（由于没有相应MAC地址的连接设备存在） -> Node1 root netns:eth0(数据包离开第一个节点，进入网络中) -> Node2 root netns:eth0 -> Node2 root netns:veth1 -> Node2 pod4 netns:eth0,参考4.2部分Figure7
-![](2023-11-15-18-44-19.png)
+![2023-11-15-18-44-19.png](https://s2.loli.net/2023/11/17/mR7jh83FMDrxsZN.png)
 ![2023-11-16-11-19-25.png](https://s2.loli.net/2023/11/17/ScQ63zLMJ7GxhpC.png)
 ![2023-11-16-11-19-34.png](https://s2.loli.net/2023/11/17/oUnbjEtIuDTcqsH.png)
 ## 0x05 k8s组件
@@ -236,7 +236,7 @@ Namespace是对一组资源和对象的抽象集合，比如可以用来将系�
 在k8s里面每个Pod都会被分配一个单独的IP地址,但这个IP地址会随着Pod的销毁而消失，重启pod的ip地址会发生变化，此时客户如果访问原先的ip地址则会报错。
 
 Service (服务)就是用来解决这个问题的, Service是应用服务的抽象，通过labels为应用提供负载均衡和服务发现，匹配labels的Pod IP和端口列表组成endpoints，由kube-proxy负责将服务IP负载均衡到这些endpoints上，通常每一个Service都会自动分配一个Cluster IP(仅在集群内部可访问的虚拟地址)和DNS名，其他容器可以通过该地址或DNS来访问服务，而不需要了解后端容器的运行。
-![](2023-11-15-18-14-45.png)
+![2023-11-15-18-14-45.png](https://s2.loli.net/2023/11/17/Dhc19sGby3nZJXM.png)
 ### 10.2 Service分类
 1. ClusterIP : 默认类型自动分配一个【仅集群内部】可以访问的虚拟IP
 2. NodePort : 对外访问应用使用在ClusterIP基础上为Service在每台机器上绑定一个端口就可以通过: ip+NodePort来访问该服务 在之前搭建k8s集群部署nginx的时候我们使用过
